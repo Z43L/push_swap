@@ -3,15 +3,18 @@
 #include "pushswap.h"
 
 
-void init_stack(pushswap *ps, int size, int values[]) {
-    int i = 0;
+void init_stack(pushswap *ps, int size, int *values) {
     ps->stacka = (int *)malloc(size * sizeof(int));
-    ps->stackb = (int *)ft_calloc(size, sizeof(int));
-    while (i < size) {
+    ps->stackb = (int *)malloc(size * sizeof(int));
+
+    for (int i = 0; i < size; i++) {
         ps->stacka[i] = values[i];
-        i++;
     }
+    
+    ps->size_a = size;  // Inicializa size_a con el tamaño de la pila inicial
+    ps->size_b = 0;     // Inicializa size_b como 0, ya que stackb empieza vacía
 }
+
 
 
 void print_stack(int *stack, int size, char name) {
@@ -24,44 +27,38 @@ void print_stack(int *stack, int size, char name) {
     ft_printf("\n");
 }
 int main(int ac, char **av) {
-    pushswap ps;
-    
-    if (ac < 2)
+    if (ac < 2) {
         return 1;
+    }
 
-
+    pushswap ps;
     ps.size = ac - 1;
-
-
-    int *values = (int *)malloc(ps.size * sizeof(int));
-    if (!values) {
-        return 1; 
+    ps.size_a = ps.size;
+    ps.size_b = 0;
+    ps.stacka = (int *)malloc(ps.size * sizeof(int));
+    ps.stackb = (int *)malloc(ps.size * sizeof(int));
+    if (!ps.stacka || !ps.stackb) {
+        return 1;
     }
 
-
-    int i = 0;
-    while (i < ps.size) {
-        values[i] = ft_atoi(av[i + 1]); 
-        i++;
+    // Inicializar stacka con los argumentos
+    for (int i = 1; i < ac; i++) {
+        ps.stacka[i - 1] = ft_atoi(av[i]);
     }
 
+    // ft_printf("Antes de ordenar:\n");
+    // print_stack(ps.stacka, ps.size_a, 'A');
+    // print_stack(ps.stackb, ps.size_b, 'B');
 
-    init_stack(&ps, ps.size, values);
+    index_based_sort(&ps, ps.size);
 
-    // printf("Antes de ordenar:\n");
-    // print_stack(ps.stacka, ps.size, 'A');
-    // print_stack(ps.stackb, ps.size, 'B');
+    // ft_printf("Después de ordenar:\n");
+    // print_stack(ps.stacka, ps.size_a, 'A');
+    // print_stack(ps.stackb, ps.size_b, 'B');
 
-    radix_sort(&ps, ps.size);
-
-    // printf("Después de ordenar:\n");
-    // print_stack(ps.stacka, ps.size, 'A');
-    // print_stack(ps.stackb, ps.size, 'B');
-
-    
     free(ps.stacka);
     free(ps.stackb);
-    free(values);
 
     return 0;
 }
+

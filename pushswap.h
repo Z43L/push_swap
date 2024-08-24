@@ -10,6 +10,8 @@ typedef struct pushswap
     int *stacka;
     int *stackb;
     int size;
+    int size_b;
+    int size_a;
 }   pushswap;
 
 pushswap pa(pushswap pushswap);
@@ -24,9 +26,10 @@ pushswap sa(pushswap pushswap);
 pushswap sb(pushswap pushswap);
 pushswap ss(pushswap pushswap);
 int get_max_bits(int *stacka, int size);
-void radix_sort(pushswap *ps, int size);
+void radix_sort(pushswap *ps);
 int lenstackb(pushswap pushswap);
 int lenstacka(pushswap pushswap);
 void print_stack(int *stack, int size, char name);
-
+void index_based_sort(pushswap *ps, int size);
+void assign_indices(int *stacka, int *indices, int size) ;
 #endif

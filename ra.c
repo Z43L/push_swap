@@ -9,14 +9,13 @@ int lenstacka(pushswap pushswap)
     return i;
 }
 pushswap ra(pushswap ps) {
-    if (ps.stacka[0] != '\0') {
+    if (ps.size_a > 1) {
         int first = ps.stacka[0];
-        int i = 0;
-        while (ps.stacka[i + 1] != '\0') {
+        for (int i = 0; i < ps.size_a - 1; i++) {
             ps.stacka[i] = ps.stacka[i + 1];
-            i++;
         }
-        ps.stacka[i] = first;
+        ps.stacka[ps.size_a - 1] = first;
     }
     return ps;
 }
+

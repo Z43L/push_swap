@@ -8,19 +8,13 @@
         i++;
     return i;
 } */
-pushswap rra(pushswap pushswap)
-{
-    int i;
-    i = 0;
-    int len;
-    len =lenstacka(pushswap);
-    int firstnum  = pushswap.stacka[len];
-    pushswap.stacka[0] = firstnum;
-    while(pushswap.stacka[len] != '\0')
-    {
-        pushswap.stacka[i] =pushswap.stacka[i + 1];
-        len--;
-        i++;
+pushswap rra(pushswap ps) {
+    if (ps.size_a > 1) {
+        int last = ps.stacka[ps.size_a - 1];
+        for (int i = ps.size_a - 1; i > 0; i--) {
+            ps.stacka[i] = ps.stacka[i - 1];
+        }
+        ps.stacka[0] = last;
     }
-    return pushswap;
+    return ps;
 }

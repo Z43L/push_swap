@@ -1,25 +1,18 @@
 #include "pushswap.h"
 
 pushswap pa(pushswap ps) {
-    if (ps.stackb[0] != -1) { // Asegúrate de usar un valor que represente un espacio vacío
+    if (ps.size_b > 0) {
         int first = ps.stackb[0];
-        int i = 0;
-        
-        // Mover todos los elementos en stackb hacia arriba
-        while (i < ps.size - 1 && ps.stackb[i + 1] != -1) {
+        for (int i = 0; i < ps.size_b - 1; i++) {
             ps.stackb[i] = ps.stackb[i + 1];
-            i++;
         }
-        ps.stackb[i] = -1; // Indicar que el último lugar está ahora vacío
+        ps.size_b--;
 
-        // Mover todos los elementos en stacka hacia abajo
-        i = ps.size - 1;
-        while (i > 0) {
+        for (int i = ps.size_a; i > 0; i--) {
             ps.stacka[i] = ps.stacka[i - 1];
-            i--;
         }
-        ps.stacka[0] = first; // Colocar el primer elemento de stackb en la parte superior de stacka
+        ps.stacka[0] = first;
+        ps.size_a++;
     }
     return ps;
 }
-

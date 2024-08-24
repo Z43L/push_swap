@@ -1,23 +1,17 @@
 #include "pushswap.h"
 pushswap pb(pushswap ps) {
-    if (ps.stacka[0] != '\0') {
+    if (ps.size_a > 0) {
         int first = ps.stacka[0];
-        int i = 0;
-        
-      
-        while (ps.stacka[i + 1] != '\0') {
+        for (int i = 0; i < ps.size_a - 1; i++) {
             ps.stacka[i] = ps.stacka[i + 1];
-            i++;
         }
-        ps.stacka[i] = '\0';
+        ps.size_a--;
 
-
-        i = ps.size - 1;
-        while (i > 0) {
+        for (int i = ps.size_b; i > 0; i--) {
             ps.stackb[i] = ps.stackb[i - 1];
-            i--;
         }
         ps.stackb[0] = first;
+        ps.size_b++;
     }
     return ps;
 }

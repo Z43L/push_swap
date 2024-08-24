@@ -9,7 +9,7 @@ LIBFT_DIR = ./LIBFT
 PRINTF_DIR = ./FT_PRINTF
 
 
-SRCS = algoorden.c main.c pa.c pb.c ra.c rb.c rr.c rra.c rrb.c rrr.c sa.c sb.c ss.c
+SRCS = algoorden.c main.c pa.c pb.c ra.c rb.c rr.c rra.c rrb.c rrr.c sa.c sb.c ss.c indexxx.c
 OBJS = $(SRCS:.c=.o)
 
 LIBFT = $(LIBFT_DIR)/libft.a
