@@ -11,8 +11,8 @@ void init_stack(pushswap *ps, int size, int *values) {
         ps->stacka[i] = values[i];
     }
     
-    ps->size_a = size;  // Inicializa size_a con el tamaño de la pila inicial
-    ps->size_b = 0;     // Inicializa size_b como 0, ya que stackb empieza vacía
+    ps->size_a = size;
+    ps->size_b = 0;
 }
 
 
@@ -46,15 +46,15 @@ int main(int ac, char **av) {
         ps.stacka[i - 1] = ft_atoi(av[i]);
     }
 
-    // ft_printf("Antes de ordenar:\n");
-    // print_stack(ps.stacka, ps.size_a, 'A');
-    // print_stack(ps.stackb, ps.size_b, 'B');
+    ft_printf("Antes de ordenar:\n");
+    print_stack(ps.stacka, ps.size_a, 'A');
+    print_stack(ps.stackb, ps.size_b, 'B');
 
     index_based_sort(&ps, ps.size);
 
-    // ft_printf("Después de ordenar:\n");
-    // print_stack(ps.stacka, ps.size_a, 'A');
-    // print_stack(ps.stackb, ps.size_b, 'B');
+    ft_printf("Después de ordenar:\n");
+    print_stack(ps.stacka, ps.size_a, 'A');
+    print_stack(ps.stackb, ps.size_b, 'B');
 
     free(ps.stacka);
     free(ps.stackb);
