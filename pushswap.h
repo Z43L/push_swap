@@ -4,6 +4,7 @@
 #include "LIBFT/libft.h"
 #include "FT_PRINTF/src/ft_printf.h"
 
+// Estructura del nodo
 typedef struct s_node {
     int value;
     int index;
@@ -32,7 +33,7 @@ void radix_sort(pushswap *ps);
 int lenstackb(pushswap pushswap);
 int lenstacka(pushswap pushswap);
 void index_based_sort(pushswap *ps, int size);
-void assign_indices(int *stacka, int *indices, int size) ;
+void assign_indices(pushswap *ps);
 void push_swap(pushswap *ps);
 void print_stack(t_node *stack, char name);
 void push(t_node **stack, int value);
@@ -40,4 +41,6 @@ void quicksort_b(pushswap *ps, int size);
 void quicksort_a(pushswap *ps, int size);
 void sort_small_stack_b(pushswap *ps, int size);
 void sort_small_stack_a(pushswap *ps, int size);
+int get_stack_size(t_node *stack);
+int find_min_position(t_node *stack);
 #endif

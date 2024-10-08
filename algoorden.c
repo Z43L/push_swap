@@ -1,30 +1,25 @@
 #include "pushswap.h"
+#include <stdlib.h>
 
-void push(t_node **stack, int value) {
-    t_node *new_node = malloc(sizeof(t_node));
-    if (new_node == NULL) {
-        // Manejo de error de asignación de memoria
-        exit(EXIT_FAILURE);
-    }
-    new_node->value = value;
+
+// Funciones básicas de la pila
+void push_node(t_node **stack, t_node *new_node) {
     new_node->next = *stack;
     *stack = new_node;
 }
 
-int pop(t_node **stack) {
-    if (*stack == NULL) {
-        // Manejo de error: stack vacío
-        exit(EXIT_FAILURE);
-    }
+t_node *pop_node(t_node **stack) {
+    if (*stack == NULL)
+        return NULL;
     t_node *temp = *stack;
-    int value = temp->value;
-    *stack = (*stack)->next;
-    free(temp);
-    return value;
+    *stack = temp->next;
+    temp->next = NULL;
+    return temp;
 }
 
 void swap(t_node **stack) {
-    if (*stack == NULL || (*stack)->next == NULL) return;
+    if (*stack == NULL || (*stack)->next == NULL)
+        return;
     t_node *first = *stack;
     t_node *second = first->next;
     first->next = second->next;
@@ -33,160 +28,102 @@ void swap(t_node **stack) {
 }
 
 void rotate(t_node **stack) {
-    if (*stack == NULL || (*stack)->next == NULL) return;
+    if (*stack == NULL || (*stack)->next == NULL)
+        return;
     t_node *first = *stack;
     t_node *current = *stack;
-    while (current->next != NULL) current = current->next;
+    while (current->next != NULL)
+        current = current->next;
     *stack = first->next;
-    current->next = first;
     first->next = NULL;
+    current->next = first;
 }
 
 void reverse_rotate(t_node **stack) {
-    if (*stack == NULL || (*stack)->next == NULL) return;
+    if (*stack == NULL || (*stack)->next == NULL)
+        return;
     t_node *prev = NULL;
     t_node *current = *stack;
     while (current->next != NULL) {
         prev = current;
         current = current->next;
     }
-    if (prev != NULL) prev->next = NULL;
+    if (prev != NULL)
+        prev->next = NULL;
     current->next = *stack;
     *stack = current;
 }
 
-int find_median(t_node *stack, int size) {
-    if (stack == NULL || size <= 0) {
-        // Manejo de error
-        exit(EXIT_FAILURE);
-    }
-
+// Función para asignar índices normalizados
+void assign_indices(pushswap *ps) {
+    int size = ps->size_a;
     int *array = malloc(size * sizeof(int));
-    if (array == NULL) {
-        // Manejo de error de asignación de memoria
+    if (array == NULL)
         exit(EXIT_FAILURE);
-    }
 
-    t_node *current = stack;
+    t_node *current = ps->stacka;
     for (int i = 0; i < size; i++) {
-        if (current == NULL) {
-            // Manejo de error: tamaño incorrecto
-            free(array);
-            exit(EXIT_FAILURE);
-        }
         array[i] = current->value;
         current = current->next;
     }
 
-    // Ordenar el array
-    for (int i = 0; i < size - 1; i++)
-        for (int j = i + 1; j < size; j++)
-            if (array[i] > array[j]) {
-                int temp = array[i];
-                array[i] = array[j];
-                array[j] = temp;
-            }
+    // Ordenar el array usando Insertion Sort
+    for (int i = 1; i < size; i++) {
+        int key = array[i];
+        int j = i - 1;
 
-    int median = array[size / 2];
+        // Mover elementos del array[0..i-1] que son mayores que 'key'
+        // una posición adelante para hacer espacio para 'key'
+        while (j >= 0 && array[j] > key) {
+            array[j + 1] = array[j];
+            j = j - 1;
+        }
+        array[j + 1] = key;
+    }
+
+    // Asignar índices a los valores
+    current = ps->stacka;
+    while (current != NULL) {
+        int index = 0;
+        while (index < size && array[index] != current->value)
+            index++;
+        current->index = index;
+        current = current->next;
+    }
     free(array);
-    return median;
 }
 
-void sort_small_stack_a(pushswap *ps, int size) {
-    if (size == 2) {
-        if (ps->stacka->value > ps->stacka->next->value) {
-            swap(&ps->stacka);
-            ft_printf("sa\n");
-        }
-    } else if (size == 3) {
-        int a = ps->stacka->value;
-        int b = ps->stacka->next->value;
-        int c = ps->stacka->next->next->value;
 
-        if (a > b && b < c && a < c) {
-            swap(&ps->stacka);
-            ft_printf("sa\n");
-        } else if (a > b && b > c) {
-            swap(&ps->stacka);
-            ft_printf("sa\n");
-            reverse_rotate(&ps->stacka);
-            ft_printf("rra\n");
-        } else if (a > b && b < c && a > c) {
-            rotate(&ps->stacka);
-            ft_printf("ra\n");
-        } else if (a < b && b > c && a < c) {
-            swap(&ps->stacka);
-            ft_printf("sa\n");
-            rotate(&ps->stacka);
-            ft_printf("ra\n");
-        } else if (a < b && b > c && a > c) {
-            reverse_rotate(&ps->stacka);
-            ft_printf("rra\n");
-        }
-    }
-}
+// Función principal de Radix Sort optimizado
+void radix_sort(pushswap *ps) {
+    assign_indices(ps);
+    int max_bits = 0;
+    int max_index = ps->size_a - 1;
 
-void sort_small_stack_b(pushswap *ps, int size) {
-    if (size == 1) {
-        push(&ps->stacka, pop(&ps->stackb));
-        ps->size_a++;
-        ps->size_b--;
-        ft_printf("pa\n");
-    } else if (size == 2) {
-        if (ps->stackb->value < ps->stackb->next->value) {
-            swap(&ps->stackb);
-            ft_printf("sb\n");
-        }
-        while (size-- > 0) {
-            push(&ps->stacka, pop(&ps->stackb));
-            ps->size_a++;
-            ps->size_b--;
-            ft_printf("pa\n");
-        }
-    } else if (size == 3) {
-        int a = ps->stackb->value;
-        int b = ps->stackb->next->value;
-        int c = ps->stackb->next->next->value;
+    // Encontrar el número máximo de bits necesarios
+    while ((max_index >> max_bits) != 0)
+        max_bits++;
 
-        if (a < b && b < c) {
-            swap(&ps->stackb);
-            ft_printf("sb\n");
-            rotate(&ps->stackb);
-            ft_printf("rb\n");
-            swap(&ps->stackb);
-            ft_printf("sb\n");
-            reverse_rotate(&ps->stackb);
-            ft_printf("rrb\n");
-        } else if (a > b && b < c && a < c) {
-            swap(&ps->stackb);
-            ft_printf("sb\n");
-        } else if (a < b && b > c && a > c) {
-            rotate(&ps->stackb);
-            ft_printf("rb\n");
-        } else if (a > b && b > c) {
-            swap(&ps->stackb);
-            ft_printf("sb\n");
-            rotate(&ps->stackb);
-            ft_printf("rb\n");
-            swap(&ps->stackb);
-            ft_printf("sb\n");
-            reverse_rotate(&ps->stackb);
-            ft_printf("rrb\n");
-            swap(&ps->stackb);
-            ft_printf("sb\n");
-        } else if (a < b && b > c && a < c) {
-            swap(&ps->stackb);
-            ft_printf("sb\n");
-            rotate(&ps->stackb);
-            ft_printf("rb\n");
-            swap(&ps->stackb);
-            ft_printf("sb\n");
-            reverse_rotate(&ps->stackb);
-            ft_printf("rrb\n");
+    for (int i = 0; i < max_bits; i++) {
+        int size = ps->size_a;
+        for (int j = 0; j < size; j++) {
+            if (((ps->stacka->index >> i) & 1) == 0) {
+                // Bit es 0, mover a 'b'
+                t_node *node = pop_node(&ps->stacka);
+                push_node(&ps->stackb, node);
+                ps->size_a--;
+                ps->size_b++;
+                ft_printf("pb\n");
+            } else {
+                // Bit es 1, rotar 'a'
+                rotate(&ps->stacka);
+                ft_printf("ra\n");
+            }
         }
-        // Después de ordenar, mover a 'a'
-        while (size-- > 0) {
-            push(&ps->stacka, pop(&ps->stackb));
+        // Mover todos los elementos de 'b' de vuelta a 'a'
+        while (ps->size_b > 0) {
+            t_node *node = pop_node(&ps->stackb);
+            push_node(&ps->stacka, node);
             ps->size_a++;
             ps->size_b--;
             ft_printf("pa\n");
@@ -194,75 +131,19 @@ void sort_small_stack_b(pushswap *ps, int size) {
     }
 }
 
-void quicksort_a(pushswap *ps, int size) {
-    if (size <= 3) {
-        sort_small_stack_a(ps, size);
-        return;
-    }
-    int pivot = find_median(ps->stacka, size);
-    int pushed = 0;
-    int rotated = 0;
-    int len = size;
-
-    for (int i = 0; i < len; i++) {
-        if (ps->stacka->value < pivot) {
-            push(&ps->stackb, pop(&ps->stacka));
-            ps->size_a--;
-            ps->size_b++;
-            pushed++;
-            ft_printf("pb\n");
-        } else {
-            rotate(&ps->stacka);
-            ft_printf("ra\n");
-            rotated++;
-        }
-    }
-
-    // Restaurar la posición original
-    while (rotated-- > 0) {
-        reverse_rotate(&ps->stacka);
-        ft_printf("rra\n");
-    }
-
-    quicksort_a(ps, size - pushed);
-    quicksort_b(ps, pushed);
-}
-
-void quicksort_b(pushswap *ps, int size) {
-    if (size <= 3) {
-        sort_small_stack_b(ps, size);
-        return;
-    }
-    int pivot = find_median(ps->stackb, size);
-    int pushed = 0;
-    int rotated = 0;
-    int len = size;
-
-    for (int i = 0; i < len; i++) {
-        if (ps->stackb->value >= pivot) {
-            push(&ps->stacka, pop(&ps->stackb));
-            ps->size_a++;
-            ps->size_b--;
-            pushed++;
-            ft_printf("pa\n");
-        } else {
-            rotate(&ps->stackb);
-            ft_printf("rb\n");
-            rotated++;
-        }
-    }
-
-    // Restaurar la posición original
-    while (rotated-- > 0) {
-        reverse_rotate(&ps->stackb);
-        ft_printf("rrb\n");
-    }
-
-    quicksort_a(ps, pushed);
-    quicksort_b(ps, size - pushed);
-}
-
+// Función principal
 void push_swap(pushswap *ps) {
-    int size = ps->size_a;
-    quicksort_a(ps, size);
+    ps->size_a = get_stack_size(ps->stacka);
+    ps->size_b = 0;
+    radix_sort(ps);
+}
+
+// Función para obtener el tamaño de la pila
+int get_stack_size(t_node *stack) {
+    int size = 0;
+    while (stack != NULL) {
+        size++;
+        stack = stack->next;
+    }
+    return size;
 }
