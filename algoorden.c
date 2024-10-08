@@ -148,21 +148,37 @@ void sort_small_stack_b(pushswap *ps, int size) {
         int b = ps->stackb->next->value;
         int c = ps->stackb->next->next->value;
 
-        if (a < b && b > c && a > c) {
-            swap(&ps->stackb);
-            ft_printf("sb\n");
-        } else if (a < b && b < c) {
+        if (a < b && b < c) {
             swap(&ps->stackb);
             ft_printf("sb\n");
             rotate(&ps->stackb);
             ft_printf("rb\n");
-        } else if (a > b && b < c && a < c) {
+            swap(&ps->stackb);
+            ft_printf("sb\n");
             reverse_rotate(&ps->stackb);
             ft_printf("rrb\n");
-        } else if (a > b && b < c && a > c) {
+        } else if (a > b && b < c && a < c) {
+            swap(&ps->stackb);
+            ft_printf("sb\n");
+        } else if (a < b && b > c && a > c) {
             rotate(&ps->stackb);
             ft_printf("rb\n");
         } else if (a > b && b > c) {
+            swap(&ps->stackb);
+            ft_printf("sb\n");
+            rotate(&ps->stackb);
+            ft_printf("rb\n");
+            swap(&ps->stackb);
+            ft_printf("sb\n");
+            reverse_rotate(&ps->stackb);
+            ft_printf("rrb\n");
+            swap(&ps->stackb);
+            ft_printf("sb\n");
+        } else if (a < b && b > c && a < c) {
+            swap(&ps->stackb);
+            ft_printf("sb\n");
+            rotate(&ps->stackb);
+            ft_printf("rb\n");
             swap(&ps->stackb);
             ft_printf("sb\n");
             reverse_rotate(&ps->stackb);
@@ -185,6 +201,7 @@ void quicksort_a(pushswap *ps, int size) {
     }
     int pivot = find_median(ps->stacka, size);
     int pushed = 0;
+    int rotated = 0;
     int len = size;
 
     for (int i = 0; i < len; i++) {
@@ -197,7 +214,14 @@ void quicksort_a(pushswap *ps, int size) {
         } else {
             rotate(&ps->stacka);
             ft_printf("ra\n");
+            rotated++;
         }
+    }
+
+    // Restaurar la posición original
+    while (rotated-- > 0) {
+        reverse_rotate(&ps->stacka);
+        ft_printf("rra\n");
     }
 
     quicksort_a(ps, size - pushed);
@@ -211,6 +235,7 @@ void quicksort_b(pushswap *ps, int size) {
     }
     int pivot = find_median(ps->stackb, size);
     int pushed = 0;
+    int rotated = 0;
     int len = size;
 
     for (int i = 0; i < len; i++) {
@@ -223,7 +248,14 @@ void quicksort_b(pushswap *ps, int size) {
         } else {
             rotate(&ps->stackb);
             ft_printf("rb\n");
+            rotated++;
         }
+    }
+
+    // Restaurar la posición original
+    while (rotated-- > 0) {
+        reverse_rotate(&ps->stackb);
+        ft_printf("rrb\n");
     }
 
     quicksort_a(ps, pushed);
