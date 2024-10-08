@@ -1,17 +1,22 @@
 #include "pushswap.h"
-pushswap pb(pushswap ps) {
-    if (ps.size_a > 0) {
-        int first = ps.stacka[0];
-        for (int i = 0; i < ps.size_a - 1; i++) {
-            ps.stacka[i] = ps.stacka[i + 1];
-        }
-        ps.size_a--;
-
-        for (int i = ps.size_b; i > 0; i--) {
-            ps.stackb[i] = ps.stackb[i - 1];
-        }
-        ps.stackb[0] = first;
-        ps.size_b++;
+void pb(pushswap *ps) {
+    if (ps->stacka == NULL) {
+        // Si el stack a está vacío, no hay nada que hacer
+        return;
     }
-    return ps;
+    
+    // Tomar el primer elemento del stack a
+    t_node *first = ps->stacka;
+    ps->stacka = ps->stacka->next;
+    
+    // Insertar el elemento al inicio del stack b
+    first->next = ps->stackb;
+    ps->stackb = first;
+    
+    // Actualizar los tamaños de los stacks
+    ps->size_a--;
+    ps->size_b++;
+    
+    // Imprimir la operación realizada
+    //ft_printf("pb\n");
 }

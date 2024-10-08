@@ -1,24 +1,21 @@
 #include "pushswap.h"
 
-int lenstackb(pushswap pushswap)
-{
-    int i; 
-    i = 0;
-    while(pushswap.stackb[i] != '\0')
-        i++;
-    return i;
-}
-
-pushswap rb(pushswap ps) {
-    if (ps.size_b > 1) { // Asegurarse de que stackb tiene al menos dos elementos
-        int temp = ps.stackb[0];
-        int i;
-
-        // Rotar los elementos en stackb
-        for (i = 0; i < ps.size_b - 1; i++) {
-            ps.stackb[i] = ps.stackb[i + 1];
-        }
-        ps.stackb[ps.size_b - 1] = temp;
+void rb(pushswap *ps) {
+    if (ps->stackb == NULL || ps->stackb->next == NULL) {
+        // Si el stack b está vacío o tiene un solo elemento, no hay nada que hacer
+        return;
     }
-    return ps;
+    
+    t_node *first = ps->stackb;
+    t_node *current = ps->stackb;
+    ps->stackb = first->next;
+    
+    while (current->next != NULL) {
+        current = current->next;
+    }
+    current->next = first;
+    first->next = NULL;
+    
+    // Imprimir la operación realizada
+    //ft_printf("rb\n");
 }

@@ -1,12 +1,17 @@
 #include "pushswap.h"
 
-pushswap sa(pushswap pushswap)
-{
-    int num1;
-    int num2;
-    num1 = pushswap.stacka[0];
-    num2 = pushswap.stacka[1];
-    pushswap.stacka[0] = num2;
-    pushswap.stacka[1] = num1;
-    return pushswap;
+void sa(pushswap *ps) {
+    if (ps->stacka == NULL || ps->stacka->next == NULL) {
+        // Si el stack a está vacío o tiene un solo elemento, no hay nada que hacer
+        return;
+    }
+    
+    t_node *first = ps->stacka;
+    t_node *second = first->next;
+    first->next = second->next;
+    second->next = first;
+    ps->stacka = second;
+    
+    // Imprimir la operación realizada
+    //ft_printf("sa\n");
 }

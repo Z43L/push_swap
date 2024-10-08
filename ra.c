@@ -1,21 +1,22 @@
 #include "pushswap.h"
 
-int lenstacka(pushswap pushswap)
-{
-    int i; 
-    i = 0;
-    while(pushswap.stacka[i] != '\0')
-        i++;
-    return i;
-}
-pushswap ra(pushswap ps) {
-    if (ps.size_a > 1) {
-        int first = ps.stacka[0];
-        for (int i = 0; i < ps.size_a - 1; i++) {
-            ps.stacka[i] = ps.stacka[i + 1];
-        }
-        ps.stacka[ps.size_a - 1] = first;
+void ra(pushswap *ps) {
+    if (ps->stacka == NULL || ps->stacka->next == NULL) {
+        // Si el stack a está vacío o tiene un solo elemento, no hay nada que hacer
+        return;
     }
-    return ps;
+    
+    t_node *first = ps->stacka;
+    t_node *current = ps->stacka;
+    ps->stacka = first->next;
+    
+    while (current->next != NULL) {
+        current = current->next;
+    }
+    current->next = first;
+    first->next = NULL;
+    
+    // Imprimir la operación realizada
+    //ft_printf("ra\n");
 }
 

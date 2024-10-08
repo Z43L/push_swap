@@ -1,8 +1,8 @@
 #include "pushswap.h"
 
-pushswap rr(pushswap pushswap)
-{
-    ra(pushswap);
-    rb(pushswap);
-    return pushswap;
+void rr(pushswap *ps) {
+    // Ejecutar ra y rb al mismo tiempo
+    ra(ps);
+    rb(ps);
+    //ft_printf("rr\n");
 }
