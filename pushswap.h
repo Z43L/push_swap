@@ -4,6 +4,9 @@
 #include "LIBFT/libft.h"
 #include "FT_PRINTF/src/ft_printf.h"
 
+
+#define INT_MIN -2147483648
+#define INT_MAX 2147483648
 // Estructura del nodo
 typedef struct s_node {
     int value;
@@ -43,4 +46,9 @@ void sort_small_stack_b(pushswap *ps, int size);
 void sort_small_stack_a(pushswap *ps, int size);
 int get_stack_size(t_node *stack);
 int find_min_position(t_node *stack);
+long	ft_atol(const char *str);
+int	has_duplicates(int argc, char **argv);
+t_node	*create_node(int value);
+int	is_number(const char *str);
+void	insertion_sort(int *array, int size);
 #endif
